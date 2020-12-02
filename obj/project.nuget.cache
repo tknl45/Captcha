@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "jZ+K97b0JxqyxyAIvya+WQ/5GhInguGYZNY0CdRaxdvIARZQU92h2TS3eszmKaCw2DvTQTkUR88e0mBYP5By5Q==",
+  "success": true,
+  "projectFilePath": "D:\\00_CODE\\dotnetCore\\Captcha\\Captcha.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\five\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
+    "C:\\Users\\five\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
+    "C:\\Users\\five\\.nuget\\packages\\passwordgenerator\\2.0.5\\passwordgenerator.2.0.5.nupkg.sha512",
+    "C:\\Users\\five\\.nuget\\packages\\system.drawing.common\\5.0.0\\system.drawing.common.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
