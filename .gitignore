@@ -1,1 +1,37 @@
-.vscode/
+app.log
+*.swp
+*.*~
+project.lock.json
+.DS_Store
+*.pyc
+nupkg/
+
+# Visual Studio Code
+.vscode
+.vs
+bin/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+obj/
+[Oo]ut/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# custom log folder
+logs/
+Properties
