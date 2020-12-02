@@ -11,3 +11,4 @@
 ## 參考文獻
 * [设计一种无状态的验证码](https://monkeywie.cn/2020/03/26/stateless-captcha/)
 * [簡單實做Captcha (完全用.Net內建函式) ](https://dotblogs.com.tw/kennyshu/2009/11/09/11504 )
+* [使用 AES 演算法為字串加密解密](https://dotblogs.com.tw/jwpl102216/2016/10/23/120443)
