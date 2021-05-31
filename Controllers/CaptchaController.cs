@@ -108,6 +108,50 @@ namespace Captcha.Controllers
         }
 
         [HttpPut]
+        [Route("vaild")]
+        /// <summary>
+        /// 驗證輸入數字是否正確
+        /// </summary>
+        /// <param name="token">token</param>
+        /// <param name="code">數字</param>
+        /// <returns>回傳Model</returns>
+        public String vaild([FromHeader] String token, [FromHeader] String code)
+        {
+            //判斷是否輸入
+            if (String.IsNullOrEmpty(token))
+            {
+                return null;
+            }
+
+            //還原
+            token = base64url_decode(token);
+
+            //AES解密
+            var jsonString = StringEncrypt.aesDecryptBase64(token, CryptoKey);
+
+            //轉換物件
+            var captchaModel = JsonSerializer.Deserialize<CaptchaModel>(jsonString);
+
+
+            //取得資料
+            var Captcha = captchaModel.Code;
+            var Exp = captchaModel.Exp;
+
+
+            //判斷時間是否過期
+            if (DateTime.Now > Exp)
+            {
+                return null;
+            }
+            if (captchaModel.Code != code)
+            {
+                return null;
+            }
+
+            return "OK";
+        }
+
+        [HttpPut]
         [Route("vaildate")]
         /// <summary>
         /// 驗證token是否正確
