@@ -30,7 +30,8 @@ namespace Captcha.Controllers
 
         [HttpGet]
         [Route("token")]
-        public String getToken(){
+        public String getToken()
+        {
             // 產生一個 5 個字元的亂碼字串
             var pwd = new Password(5).IncludeNumeric();
             var Captcha = pwd.Next();
@@ -50,7 +51,7 @@ namespace Captcha.Controllers
             string token = StringEncrypt.aesEncryptBase64(jsonString, CryptoKey);
 
             //取代特殊符號回傳         
-            
+
             return base64url_encode(token);
         }
 
@@ -59,17 +60,51 @@ namespace Captcha.Controllers
         public IActionResult Get(String token)
         {
             var captchaModel = vaildate(token);
-            if( captchaModel == null){
-                 return Ok("token is expired");
+            if (captchaModel == null)
+            {
+                return Ok("token is expired");
             }
-            
 
-            
+
+
             var byteImage = GenerateCaptcha(captchaModel.Code);
             return File(byteImage, "image/jpeg");
 
+
+
+        }
+
+
+
+        [HttpGet]
+        [Route("audio")]
+        public IActionResult AudioGet(String token)
+        {
+            var captchaModel = vaildate(token);
+            if (captchaModel == null)
+            {
+                return Ok("token is expired");
+            }
+
+            var code = captchaModel.Code;
+            var compose = new byte[]{}; 
+            foreach (var item in code)
+            {
+                byte[] bytes = System.IO.File.ReadAllBytes($"Audio/{item}.mp3");
+                compose = Combine(compose,bytes);
+            }
             
-         
+
+
+            return File(compose, "audio/mpeg");
+
+
+
+        }
+
+        public static byte[] Combine(byte[] first, byte[] second)
+        {
+            return first.Concat(second).ToArray();
         }
 
         [HttpPut]
@@ -79,9 +114,11 @@ namespace Captcha.Controllers
         /// </summary>
         /// <param name="token"></param>
         /// <returns>回傳Model</returns>
-        public CaptchaModel vaildate([FromHeader]String token){
+        public CaptchaModel vaildate([FromHeader] String token)
+        {
             //判斷是否輸入
-            if(String.IsNullOrEmpty(token)){
+            if (String.IsNullOrEmpty(token))
+            {
                 return null;
             }
 
@@ -101,7 +138,8 @@ namespace Captcha.Controllers
 
 
             //判斷時間是否過期
-            if(DateTime.Now > Exp){
+            if (DateTime.Now > Exp)
+            {
                 return null;
             }
 
@@ -113,7 +151,8 @@ namespace Captcha.Controllers
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        private String base64url_encode(String s) {
+        private String base64url_encode(String s)
+        {
             s = s.Replace('+', '-');
             s = s.Replace('/', '_');
             return s;
@@ -124,23 +163,25 @@ namespace Captcha.Controllers
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        private String base64url_decode(String s) {
+        private String base64url_decode(String s)
+        {
             s = s.Replace('-', '+');
             s = s.Replace('_', '/');
             return s;
         }
 
-        
+
 
         /// <summary>
         /// 輸入code 產生Captcha
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        private byte[] GenerateCaptcha(String code){
+        private byte[] GenerateCaptcha(String code)
+        {
             // (封裝 GDI+ 點陣圖) 新增一個 Bitmap 物件，並指定寬、高
             Bitmap _bmp = new Bitmap(60, 20);
-            
+
             // (封裝 GDI+ 繪圖介面) 所有繪圖作業都需透過 Graphics 物件進行操作
             Graphics _graphics = Graphics.FromImage(_bmp);
 
@@ -152,7 +193,7 @@ namespace Captcha.Controllers
 
             // 設定要出現在圖片上的文字字型、大小與樣式
             Font _font = new Font("Courier New", 12, FontStyle.Bold);
-            
+
             //產生雜點
             Random rdn = new Random();
             int intNoiseWidth = 25;
@@ -184,39 +225,39 @@ namespace Captcha.Controllers
             }
 
 
-            
+
 
             // 將亂碼字串「繪製」到之前產生的 Graphics 「繪圖板」上
-            _graphics.DrawString(Convert.ToString(code), 
+            _graphics.DrawString(Convert.ToString(code),
                 _font, Brushes.Black, 3, 3);
 
             // 輸出之前 Captcha 圖示
             Response.ContentType = "image/gif";
-            
+
             byte[] byteImage = BitmapToBytes(_bmp);
-            
+
             return byteImage;
         }
 
-        private byte[] BitmapToBytes(Bitmap Bitmap) 
-        { 
-            MemoryStream ms = null; 
-            try 
-            { 
-                ms = new MemoryStream(); 
-                Bitmap.Save(ms, ImageFormat.Gif); 
-                byte[] byteImage = new Byte[ms.Length]; 
-                byteImage = ms.ToArray(); 
-                return byteImage; 
-            } 
-            catch (ArgumentNullException ex) 
-            { 
-                throw ex; 
-            } 
-            finally 
-            { 
-                ms.Close(); 
-            } 
-        } 
+        private byte[] BitmapToBytes(Bitmap Bitmap)
+        {
+            MemoryStream ms = null;
+            try
+            {
+                ms = new MemoryStream();
+                Bitmap.Save(ms, ImageFormat.Gif);
+                byte[] byteImage = new Byte[ms.Length];
+                byteImage = ms.ToArray();
+                return byteImage;
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                ms.Close();
+            }
+        }
     }
 }
