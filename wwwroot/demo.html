@@ -11,15 +11,16 @@
 
     <h1>DEMO TKNL45 CAPTCHA</h1>
 
-    <p>0.設定Endpoint</p>
+    <p>設定Endpoint</p>
     <input type="text" class="form-control" id="endpoint" value="http://localhost:5000">
+    <hr>
+    <h1>DEMO</h1>
 
-    <p>1.取得驗證碼</p>
-    <button type="button" class="btn btn-primary" onclick="getToken()">取得驗證碼</button>
     <input type="text" class="form-control" id="token" aria-describedby="token" style="display: none;">
 
     <img src="" id="picToken" width="100px">
-    <BR>
+    
+    
     <button type="button" class="btn btn-success" onclick="play()">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-volume-up"
             viewBox="0 0 16 16">
@@ -33,15 +34,25 @@
                 d="M10.025 8a4.486 4.486 0 0 1-1.318 3.182L8 10.475A3.489 3.489 0 0 0 9.025 8c0-.966-.392-1.841-1.025-2.475l.707-.707A4.486 4.486 0 0 1 10.025 8zM7 4a.5.5 0 0 0-.812-.39L3.825 5.5H1.5A.5.5 0 0 0 1 6v4a.5.5 0 0 0 .5.5h2.325l2.363 1.89A.5.5 0 0 0 7 12V4zM4.312 6.39 6 5.04v5.92L4.312 9.61A.5.5 0 0 0 4 9.5H2v-3h2a.5.5 0 0 0 .312-.11z">
             </path>
         </svg>
-        PLAY
     </button>
+    <button type="button" class="btn btn-primary" onclick="getToken()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat"
+            viewBox="0 0 16 16">
+            <path
+                d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
+            <path fill-rule="evenodd"
+                d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z" />
+        </svg>
+    </button>
+
     <audio id="audio" src="http://dev.interactive-creation-works.net/1/1.ogg"></audio>
 
 
-    <p>2.輸入驗證</p>
-    <input type="text" class="form-control" id="code">
-    <button type="button" class="btn btn-primary" onclick="vaild()">驗證</button>
-
+    
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="請輸入上方驗證碼" aria-label="輸入驗證" aria-describedby="button-addon2" id="code">
+        <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="vaild()">驗證</button>
+    </div>
 
     <script>
         function getToken() {
@@ -49,7 +60,6 @@
 
             $.get(endpoint + "/captcha/token", function (token) {
                 $("#token").val(token);
-                alert("Token was get!");
 
                 $("#picToken").attr('src', endpoint + "/captcha/img?token=" + token);
                 $("#audio").attr('src', endpoint + "/captcha/audio?token=" + token);
@@ -62,24 +72,27 @@
             audio.play();
         }
 
-        function vaild(){
+        function vaild() {
             var endpoint = $('#endpoint').val();
             $.ajax({
                 url: endpoint + "/captcha/vaild",
                 type: 'PUT',
-                headers:{
+                headers: {
                     'token': $("#token").val(),
                     'code': $("#code").val()
                 },
-                success: function(result) {
-                    if(result != null){
+                success: function (result) {
+                    if (result != null) {
                         alert("成功");
-                    }else{
+                    } else {
                         alert("失敗");
                     }
                 }
             });
         }
+
+        // 一開始先執行
+        getToken()
     </script>
 
 </body>
