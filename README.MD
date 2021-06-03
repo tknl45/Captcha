@@ -13,8 +13,11 @@ Generate a graphic/sound verification Captcha with a validity period of 1 minute
 
 ## demo
 
-請打開wwwroot/demo.html
+![demo](wwwroot/demo.png "DEMO")
 
+1. donet run
+2. 請打開wwwroot/demo.html
+3. 測試
 
 ## 參考文獻
 * [设计一种无状态的验证码](https://monkeywie.cn/2020/03/26/stateless-captcha/)
