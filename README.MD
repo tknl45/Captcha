@@ -1,11 +1,19 @@
 # 無狀態驗證碼
 
-產生有1分鐘效期的圖形驗證碼
+產生有1分鐘效期的圖形/聲音驗證碼
+
+Generate a graphic/sound verification Captcha with a validity period of 1 minute 
+
 
 ## 相關API
 
 * [GET] captcha/token 取得含有驗證碼的加密字串
 * [GET] captcha/img?token=2xZUiAG...  傳入token產生驗證碼圖檔
+* [GET] captcha/audio?token=2xZUiAG...  傳入token產生驗證碼音檔(無雜訊)
+
+## demo
+
+請打開wwwroot/demo.html
 
 
 ## 參考文獻
