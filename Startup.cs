@@ -43,6 +43,9 @@ namespace Captcha
 
             app.UseAuthorization();
 
+            //啟用wwwroot靜態檔案
+            app.UseStaticFiles ();
+
             // Shows UseCors with CorsPolicyBuilder.
             app.UseCors(builder =>
             {
