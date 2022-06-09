@@ -40,8 +40,8 @@ namespace Captcha.Controllers
             CaptchaModel captchaModel = new CaptchaModel();
             captchaModel.Code = Captcha;
 
-            //設定過期時間為一分鐘
-            captchaModel.Exp = DateTime.Now.AddMinutes(1);
+            //設定過期時間為3分鐘
+            captchaModel.Exp = DateTime.Now.AddMinutes(3);
 
             //轉換json字串
             string jsonString = JsonSerializer.Serialize(captchaModel);
