@@ -21,9 +21,9 @@ namespace Utils
             string encrypt = "";
             try
             {
-                AesCryptoServiceProvider aes = new AesCryptoServiceProvider();
-                MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-                SHA256CryptoServiceProvider sha256 = new SHA256CryptoServiceProvider();
+                Aes aes = Aes.Create();
+                MD5 md5 = MD5.Create();
+                SHA256 sha256 = SHA256.Create();
                 byte[] key = sha256.ComputeHash(Encoding.UTF8.GetBytes(CryptoKey));
                 byte[] iv = md5.ComputeHash(Encoding.UTF8.GetBytes(CryptoKey));
                 aes.Key = key;
@@ -56,9 +56,9 @@ namespace Utils
             string decrypt = "";
             try
             {
-                AesCryptoServiceProvider aes = new AesCryptoServiceProvider();
-                MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-                SHA256CryptoServiceProvider sha256 = new SHA256CryptoServiceProvider();
+                Aes aes = Aes.Create();
+                MD5 md5 = MD5.Create();
+                SHA256 sha256 = SHA256.Create();
                 byte[] key = sha256.ComputeHash(Encoding.UTF8.GetBytes(CryptoKey));
                 byte[] iv = md5.ComputeHash(Encoding.UTF8.GetBytes(CryptoKey));
                 aes.Key = key;
