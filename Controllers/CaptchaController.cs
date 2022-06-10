@@ -1,17 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Drawing;
 using PasswordGenerator;
-using System.Drawing.Imaging;
 using System.IO;
 using Captcha.Models;
 using System.Text.Json;
 using Utils;
+using SixLabors.Fonts;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.Formats.Jpeg;
 
 namespace Captcha.Controllers
 {
@@ -223,76 +224,89 @@ namespace Captcha.Controllers
         /// <returns></returns>
         private byte[] GenerateCaptcha(String code)
         {
-            // (封裝 GDI+ 點陣圖) 新增一個 Bitmap 物件，並指定寬、高
-            Bitmap _bmp = new Bitmap(60, 20);
-
-            // (封裝 GDI+ 繪圖介面) 所有繪圖作業都需透過 Graphics 物件進行操作
-            Graphics _graphics = Graphics.FromImage(_bmp);
-
-            // 設定圖片背景
-            _graphics.Clear(Color.Cornsilk);
-
-            // 如果想啟用「反鋸齒」功能，可以將以下這行取消註解
-            //_graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
-
+            var ww = 60;
+            var hh = 20;
             // 設定要出現在圖片上的文字字型、大小與樣式
-            Font _font = new Font("Courier New", 12, FontStyle.Bold);
+            var font = SystemFonts.CreateFont("Courier New", 16, FontStyle.Bold);
 
-            //產生雜點
-            Random rdn = new Random();
-            int intNoiseWidth = 25;
-            int intNoiseHeight = 15;
-            int x1 = 0;
-            int y1 = 0;
 
-            for (int i = 0; i < 80; i++)
+            using (Image<Rgba32> image = new Image<Rgba32>(ww, hh))   //畫布大小
             {
-                x1 = rdn.Next(0, _bmp.Width);
-                y1 = rdn.Next(0, _bmp.Height);
-                _bmp.SetPixel(x1, y1, Color.Brown);
+                image.Mutate(x =>
+                {
+                    //設定圖片背景
+                    var imgProc = x.BackgroundColor(Color.Cornsilk);
+
+                    //逐個畫字
+                    x.DrawText(code, font, Color.Black, new PointF(3, 6));
+
+                    
+                    Random rdn = new Random();
+
+                    // 圖片干擾
+                    for (int i = 0; i < 10; i++)
+                    {
+                        var pen = new Pen(Color.Black, 1);
+                        var p1 = new PointF(rdn.Next(ww), rdn.Next(hh));
+                        var p2 = new PointF(rdn.Next(ww), rdn.Next(hh));
+
+                        x.DrawLines(pen, p1, p2);
+                    }
+
+                    // 產生雜點
+                    for (int i = 0; i < 80; i++)
+                    {
+                        var pen = new Pen(Color.Brown, 1);
+                        var p1 = new PointF(rdn.Next(ww), rdn.Next(hh));
+                        var p2 = new PointF(p1.X + 1f, p1.Y + 1f);
+
+                        x.DrawLines(pen, p1, p2);
+                    }
+
+                    
+                });
+
+                byte[] byteImage = ImageToBytes(image);
+
+                return byteImage;
+                
             }
-
-            //產生擾亂弧線
-            int x2 = 0;
-            int y2 = 0;
-            int x3 = 0;
-            int y3 = 0;
-            for (int i = 0; i < 15; i++)
-            {
-                x1 = rdn.Next(_bmp.Width - intNoiseWidth);
-                y1 = rdn.Next(_bmp.Height - intNoiseHeight);
-                x2 = rdn.Next(1, intNoiseWidth);
-                y2 = rdn.Next(1, intNoiseHeight);
-                x3 = rdn.Next(0, 45);
-                y3 = rdn.Next(-270, 270);
-                _graphics.DrawArc(new Pen(Brushes.Gray), x1, y1, x2, y2, x3, y3);
-            }
+         
 
 
+            
 
 
-            // 將亂碼字串「繪製」到之前產生的 Graphics 「繪圖板」上
-            _graphics.DrawString(Convert.ToString(code),
-                _font, Brushes.Black, 3, 3);
+ 
+            // //產生擾亂弧線
+            // int x2 = 0;
+            // int y2 = 0;
+            // int x3 = 0;
+            // int y3 = 0;
+            // for (int i = 0; i < 15; i++)
+            // {
+            //     x1 = rdn.Next(_bmp.Width - intNoiseWidth);
+            //     y1 = rdn.Next(_bmp.Height - intNoiseHeight);
+            //     x2 = rdn.Next(1, intNoiseWidth);
+            //     y2 = rdn.Next(1, intNoiseHeight);
+            //     x3 = rdn.Next(0, 45);
+            //     y3 = rdn.Next(-270, 270);
+            //     _graphics.DrawArc(new Pen(Brushes.Gray), x1, y1, x2, y2, x3, y3);
+            // }
+
 
             // 輸出之前 Captcha 圖示
-            Response.ContentType = "image/gif";
-
-            byte[] byteImage = BitmapToBytes(_bmp);
-
-            return byteImage;
+            // Response.ContentType = "image/gif";
         }
 
-        private byte[] BitmapToBytes(Bitmap Bitmap)
+        private byte[] ImageToBytes(Image<Rgba32> imageIn)
         {
             MemoryStream ms = null;
             try
             {
                 ms = new MemoryStream();
-                Bitmap.Save(ms, ImageFormat.Gif);
-                byte[] byteImage = new Byte[ms.Length];
-                byteImage = ms.ToArray();
-                return byteImage;
+                imageIn.Save(ms, new JpegEncoder { Quality = 85 });
+                return  ms.ToArray();
             }
             catch (ArgumentNullException ex)
             {
