@@ -238,7 +238,7 @@ namespace Captcha.Controllers
                     var imgProc = x.BackgroundColor(Color.Cornsilk);
 
                     //逐個畫字
-                    x.DrawText(code, font, Color.Black, new PointF(3, 6));
+                    x.DrawText(code, font, Color.Black, new PointF(6, 3));
 
                     
                     Random rdn = new Random();

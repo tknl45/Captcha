@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6</TargetFramework>
   </PropertyGroup>
   <!--資料夾-->
   <ItemGroup>
@@ -11,7 +11,6 @@
 
   <ItemGroup>
     <PackageReference Include="PasswordGenerator" Version="2.0.5" />
-    <PackageReference Include="PdfLibCore.ImageSharp" Version="2.1.0" />
     <PackageReference Include="SixLabors.Fonts" Version="1.0.0-beta17" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14" />
   </ItemGroup>
